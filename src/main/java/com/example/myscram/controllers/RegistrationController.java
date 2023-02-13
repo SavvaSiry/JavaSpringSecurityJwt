@@ -8,10 +8,14 @@ import com.example.myscram.service.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
+@ControllerAdvice
 public class RegistrationController {
 
     private static final Logger LOG = LoggerFactory.getLogger(RegistrationController.class);
@@ -28,20 +32,38 @@ public class RegistrationController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public EntityModel<TokenDto> registration(@RequestBody UserDto user) {
-        LOG.info("TOKEN requested for user: '{}'", user.name());
-//        return EntityModel.of(tokenService.generateToken(authentication));
-//        return EntityModel.of(new TokenDto("access","refresh"));
-        return EntityModel.of(tokenService.generateToken(registrationService.addNewUser(user)));
+        if (registrationService.findByName(user.name())){
+            LOG.info("User already exists with name: '{}'", user.name());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
+        }
+        else if (registrationService.findByEmail(user.email())) {
+            LOG.info("User already exists with email: '{}'", user.email());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
+        }
+        User newUser = User.builder().username(user.name()).password(user.password()).email(user.email()).build();
+        return EntityModel.of(tokenService.generateToken(registrationService.addNewUser(newUser)));
     }
 
-//    @PostMapping(path = "/registration")
-//    public String registration() {
-//        return "Hello!";
-//    }
+    @PostMapping(path = "/registration/validate/username",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> checkUsername(@RequestBody UserDto user) {
+        if (registrationService.findByName(user.name())){
+            LOG.info("User already exists with name: '{}'", user.name());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Username is valid");
+    }
 
-    @GetMapping(path = "/registration/test")
-    public String registrationTest() {
-        return "Secure!";
+    @PostMapping(path = "/registration/validate/email",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> checkEmail(@RequestBody UserDto user) {
+        if (registrationService.findByEmail(user.email())){
+            LOG.info("User already exists with name: '{}'", user.name());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Email is valid");
     }
 
 }
