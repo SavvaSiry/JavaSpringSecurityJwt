@@ -21,7 +21,7 @@ public class RegistrationController {
     private static final Logger LOG = LoggerFactory.getLogger(RegistrationController.class);
 
     private final RegistrationService registrationService;
-    public final TokenService tokenService;
+    private final TokenService tokenService;
 
     public RegistrationController(RegistrationService registrationService, TokenService tokenService) {
         this.registrationService = registrationService;
@@ -33,11 +33,9 @@ public class RegistrationController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public EntityModel<TokenDto> registration(@RequestBody UserDto user) {
         if (registrationService.findByName(user.name())){
-            LOG.info("User already exists with name: '{}'", user.name());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
         }
         else if (registrationService.findByEmail(user.email())) {
-            LOG.info("User already exists with email: '{}'", user.email());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
         }
         User newUser = User.builder().username(user.name()).password(user.password()).email(user.email()).build();
