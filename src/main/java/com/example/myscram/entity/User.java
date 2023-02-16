@@ -1,19 +1,20 @@
 package com.example.myscram.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Set;
 
-@Entity
-@Data
-@Builder
 @AllArgsConstructor
+@Builder
+@Data
+@Entity
 @Table(name = "users")
 public class User implements UserDetails {
 

@@ -1,9 +1,9 @@
 package com.example.myscram.entity;
 
-import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 
+import javax.persistence.*;
 import java.util.List;
 
 @Entity

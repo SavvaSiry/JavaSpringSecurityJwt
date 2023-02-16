@@ -1,4 +1,4 @@
-package com.example.myscram.handlers;
+package com.example.myscram.config;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

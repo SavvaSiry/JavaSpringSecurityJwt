@@ -1,5 +1,14 @@
 package com.example.myscram.model;
 
-public record UserDto(String name, String password, String email) {
+import lombok.*;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserDto {
+
+    public String name;
+    public String password;
+    public String email;
 }

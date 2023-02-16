@@ -5,11 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenDto {
-    public String accessToken;
-    public String refreshToken;
+public final class CredentialsDto {
+
+    public String login;
+    public char[] password;
+
 }
